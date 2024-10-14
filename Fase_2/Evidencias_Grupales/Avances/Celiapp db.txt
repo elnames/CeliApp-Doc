@@ -1,0 +1,93 @@
+CREATE TABLE Usuarios (
+    id_usuario BIGINT PRIMARY KEY,
+    id_estado BIGINT,
+    nombre VARCHAR(255),
+    correo VARCHAR(255),
+    clave VARCHAR(255),
+    invitado BOOLEAN DEFAULT FALSE,
+    creado DATETIME,
+    FOREIGN KEY (id_estado) REFERENCES Estado_usuario_Subcripcion(id_estado)
+);
+
+CREATE TABLE Estado_usuario_Subcripcion (
+    id_estado BIGINT PRIMARY KEY,
+    estado VARCHAR(255),
+    pago DECIMAL
+);
+
+CREATE TABLE Productos (
+    id_producto BIGINT PRIMARY KEY,
+    id_categoria BIGINT,
+    nombre VARCHAR(255),
+    descripcion TEXT,
+    prod_celiaco BOOLEAN,
+    codigo_barras VARCHAR(255),
+    creado DATETIME,
+    FOREIGN KEY (id_categoria) REFERENCES Categorias(id_categoria)
+);
+
+CREATE TABLE Tiendas (
+    id_tienda BIGINT PRIMARY KEY,
+    nombre VARCHAR(255),
+    direccion VARCHAR(255),
+    longitud DECIMAL,
+    latitud DECIMAL,
+    creado DATETIME
+);
+
+CREATE TABLE Categorias (
+    id_categoria BIGINT PRIMARY KEY,
+    nombre VARCHAR(255)
+);
+
+CREATE TABLE Favoritos (
+    id_favoritos BIGINT PRIMARY KEY,
+    id_us BIGINT,
+    id_prod BIGINT,
+    creado DATETIME,
+    FOREIGN KEY (id_us) REFERENCES Usuarios(id_usuario),
+    FOREIGN KEY (id_prod) REFERENCES Productos(id_producto)
+);
+
+CREATE TABLE EscaneoProducto (
+    id_escaneo BIGINT PRIMARY KEY,
+    id_usuario BIGINT,
+    id_producto BIGINT,
+    imagen VARCHAR(255),
+    fecha DATETIME,
+    es_seguro BOOLEAN,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
+    FOREIGN KEY (id_producto) REFERENCES Productos(id_producto)
+);
+
+CREATE TABLE EvaluacionProducto (
+    id_evaluacion BIGINT PRIMARY KEY,
+    id_usuario BIGINT,
+    id_producto BIGINT,
+    id_tienda BIGINT,
+    rating INT,
+    recomendacion TEXT,
+    fecha DATETIME,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
+    FOREIGN KEY (id_producto) REFERENCES Productos(id_producto),
+    FOREIGN KEY (id_tienda) REFERENCES Tiendas(id_tienda)
+);
+
+CREATE TABLE SolicitudProductoTienda (
+    id_solicitud BIGINT PRIMARY KEY,
+    id_usuario BIGINT,
+    tipo_solicitud ENUM('Producto', 'Tienda'),
+    nombre VARCHAR(255),
+    descripcion TEXT,
+    img VARCHAR(255),
+    fecha DATETIME,
+    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario)
+);
+
+CREATE TABLE producto_tienda (
+    id_producto_tienda BIGINT PRIMARY KEY,
+    id_producto BIGINT,
+    id_tienda BIGINT,
+    FOREIGN KEY (id_producto) REFERENCES Productos(id_producto),
+    FOREIGN KEY (id_tienda) REFERENCES Tiendas(id_tienda)
+);
